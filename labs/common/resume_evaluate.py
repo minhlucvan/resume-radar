@@ -8,6 +8,8 @@ import dateparser
 import datetime
 import json
 import re
+import streamlit as st
+import plotly.graph_objects as go
 
 # flatten nested dictionary
 # convert nested dictionary to flat dictionary
@@ -233,17 +235,17 @@ def progress_resume_features(df):
     return df
 
 # calculate_critical_score
-def calculate_critical_score(aggreate_func, df, feature, score_df):
+def calculate_critical_score(aggreate_func, df, feature, weight, score_df):
     # filter dataframe
     filtered_df = df[df.index.str.match(feature)]
     
     # aggregate values
-    score = aggreate_func(filtered_df['value'], df, score_df)
+    score, weight = aggreate_func(filtered_df['value'], df, score_df, weight)
     
-    return score
+    return score, weight
 
 # aggregate total work experience
-def aggreate__total_work_experience(values, df, score_df):
+def aggreate__total_work_experience(values, df, score_df, weight):
     value = values.sum()
         
     if 'work_experience_duration' in df.index:
@@ -259,7 +261,7 @@ def aggreate__total_work_experience(values, df, score_df):
         
         value = total_experience.days / 365
         
-    return value * 10
+    return value * 10, weight
 
 # aggregate techstack range
 def aggreate_techstack_range(values):
@@ -290,13 +292,13 @@ def calculate_scores(df, criterias):
     
         criteria_weight = value['weight']
         criteria_agg_func = value['aggregate_func']
-        score = calculate_critical_score(criteria_agg_func, df, criteria_feature, score_df)
-        weighted_score = score * criteria_weight
+        score, weight = calculate_critical_score(criteria_agg_func, df, criteria_feature, criteria_weight, score_df)
+        weighted_score = score * weight
         
         criteria_df = pd.DataFrame({
             'critical': [criteria_name],
             'score': [score],
-            'weight': [criteria_weight],
+            'weight': [weight],
             'weighted_score': [weighted_score]
         })
         
@@ -362,7 +364,7 @@ def aggreate_front_end_experience(values):
     return values.sum()
 
 # aggreate_project_experience
-def aggreate_project_experience(values, df, score_df):
+def aggreate_project_experience(values, df, score_df, weight):
     # complexity_feature = "projects_\d+_complexity"
     # complexcity_df = df[df.index.str.match(complexity_feature)]
     # complexcity_mean = complexcity_df['value'].mean()
@@ -389,7 +391,7 @@ def aggreate_project_experience(values, df, score_df):
     
     scaled_value = value * work_experience_ratio
     
-    return scaled_value
+    return scaled_value, weight
 
 # none aggregate function
 def none_aggreate(values, _):
@@ -612,8 +614,8 @@ def calculate_total_score(df):
     # weighted mean of scores
     return (df['weighted_score'].sum() / df['weight'].sum())
 
-def aggreate_empoyment_duration(values, df, score_df):
-    return values.sum() * 10
+def aggreate_empoyment_duration(values, df, score_df, weight):
+    return values.sum() * 10, weight
 
 def append_first_work_experience(df):
     df = df.copy().dropna()
@@ -673,20 +675,98 @@ def append_first_work_experience(df):
 
     return append_df
 
-def education_aggreate(values, df, score_df):
+def education_aggreate(values, df, score_df, weight):
     current_score = calculate_total_score(score_df)
     if values.empty:
-        return current_score
+        return 0, 0
     
-    return current_score + 10
+    return current_score + 10, weight
 
-def certification_aggreate(values, df, score_df):
+def certification_aggreate(values, df, score_df, weight):
     current_score = calculate_total_score(score_df)
     if values.empty:
-        return current_score
+        return 0, 0
     
     value = values.count() * 2.4
-    return current_score + value
+    return current_score + value, weight
+
+def find_level(score, level_ranges):
+    level = "Unknown"
+    for item in level_ranges:
+        if score < item["min"]:
+            return level
+        
+        level = item["level"]
+    return "Beyond Senior+"
+
+def build_level_step(level_ranges, color_scale=None):
+    steps = []
+    
+    for item in level_ranges:
+        # Determine the appropriate color based on the level
+        if item["level"] in color_scale:
+            color = color_scale[item["level"]]
+        else:
+            color = '#000000'  # Default color
+        
+        steps.append({'range': [item["min"], 100], 'color': color})
+    return steps
+
+# plot_skill_level
+# plot chart with score and level ranges
+# a progress bar chart with score and level ranges
+def plot_skill_level(score, level_ranges):
+    # Define the color scale
+    color_scale = {
+        "Fresh-": "#D3D3D3",
+        "Fresh": "#7FFF00",
+        "Fresh+": "#32CD32",
+        "Junior-": "#00FFFF",
+        "Junior": "#1E90FF",
+        "Junior+": "#0000FF",
+        "Mid-": "#FFA500",
+        "Mid": "#FF4500",
+        "Mid+": "#FF0000",
+        "Senior-": "#8B0000",
+        "Senior": "#800000",
+        "Senior+": "#A52A2A"
+    }
+    
+    fig = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = score,
+        domain = {'x': [0, 1], 'y': [0, 1]},
+        gauge = {
+            'axis': {'range': [None, 100]},
+            'steps' : build_level_step(level_ranges, color_scale),
+            'threshold' : {
+                'line': {'color': "black", 'width': 4},
+                'thickness': 0.75,
+                'value': score
+            },
+            'bar': {
+                'color': "black",
+                'thickness': 0.05
+            }
+        }
+    ))
+    
+    level_ranges_reversed = level_ranges[::-1]
+    
+    # adding legend for level ranges
+    for item in level_ranges_reversed:
+        fig.add_trace(go.Scatter(
+            x=[None], y=[None],
+            mode='markers',
+            marker=dict(size=10, color=color_scale[item["level"]]),
+            name=item["level"]
+        ))
+        
+    # remove x and y axis
+    fig.update_xaxes(visible=False)
+    fig.update_yaxes(visible=False)
+    
+    return fig
 
 # Streamlit app
 def evaluate_resume(data, print=False):
@@ -784,6 +864,8 @@ def evaluate_resume(data, print=False):
         {"level": "Senior", "min": 78},
         {"level": "Senior+", "min": 88},
     ]
+    
+    
 
 
     # level_ranges_df = pd.DataFrame(level_ranges)
@@ -809,6 +891,11 @@ def evaluate_resume(data, print=False):
     
     # final level
     level = get_level(total_score, level_ranges)
+
+    fig = plot_skill_level(total_score, level_ranges)
+    
+    st.plotly_chart(fig)
+
     
     return level
     
