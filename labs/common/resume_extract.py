@@ -533,16 +533,25 @@ def extract_resume(url_or_file):
 
     # extract yml from structured data
     with st.spinner("Extracting yml from structured data..."):
-        json_data = extract_json(data)
-        # combine all the extracted data into a dictionary
-        parsed_yml = json.loads(json_data)
-        st.write('Extracted Json:')
+        try:
+            json_data = extract_json(data)
+            # combine all the extracted data into a dictionary
+            parsed_yml = json.loads(json_data)
+            st.write('Extracted Json:')
+        except Exception as e:
+            st.write('Error extracting json data:', e)
+            st.text_area("Extracted Json", json_data)
 
     # extract project data
     with st.spinner("Extracting project data..."):
-        project_data = extract_project_data(text)
-        parsed_project_data = json.loads(project_data)
-        st.write('Extracted project data:')
+        try:
+            project_data = extract_project_data(text)
+            st.text_area("Extracted project data", project_data)
+            parsed_project_data = json.loads(project_data)
+            st.write('Extracted project data:')
+        except Exception as e:
+            st.write('Error extracting project data:', e)
+            st.text_area("Extracted project data", project_data)
         
     with st.spinner("Extracting education data..."):
         education_data = extract_education_data(text)

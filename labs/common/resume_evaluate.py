@@ -137,6 +137,19 @@ def convert_wildcards_to_date(value):
     if value.lower() == "present" or value.lower() == "now":
         return datetime.datetime.now().date()
     
+    # if value is a year return 01-01-year
+    if value.isdigit():
+        try:
+            parsed_date = datetime.datetime.strptime(value, '%Y')
+            
+            if parsed_date is not None and parsed_date > datetime.datetime.now():
+                return datetime.datetime.now().date()
+            
+            return parsed_date.date()
+        except ValueError:
+            print("Cannot parse date")
+    
+    
     # 2022-04
     try:
         parsed_date = datetime.datetime.strptime(value, '%Y-%m')
@@ -571,7 +584,6 @@ def preprocess_projects(data):
             
         project['duration_years'] = dureation_years
         experience_score = project['contribution'] * (project['complexity'] * dureation_years)
-        st.write(f"Experience score: {experience_score} = {project['contribution']} * ({project['complexity']} * {dureation_years})")
         project['experience_score'] = experience_score
         total_projects_duration += dureation_years
     
