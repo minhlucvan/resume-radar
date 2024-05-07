@@ -103,6 +103,11 @@ def convert_wildcards_to_month(value):
     # remove ~
     value = value.replace("~", "")
     
+    # if value is number string return as integer
+    # 12 -> 12
+    if value.isdigit():
+        return int(value)
+    
     # if value is 4 years
     if "year" in value:
         years = int(value.split()[0])
@@ -131,6 +136,13 @@ def convert_wildcards_to_date(value):
     
     if value.lower() == "present" or value.lower() == "now":
         return datetime.datetime.now().date()
+    
+    # 2022-04
+    try:
+        parsed_date = datetime.datetime.strptime(value, '%Y-%m')
+        return parsed_date.date()
+    except ValueError:
+        print("Cannot parse date")
     
     # March, 2022
     try:
@@ -208,20 +220,17 @@ def progress_resume_features(df):
     return df
 
 # calculate_critical_score
-def calculate_critical_score(df, feature, aggreate_func):
+def calculate_critical_score(aggreate_func, df, feature, score_df):
     # filter dataframe
     filtered_df = df[df.index.str.match(feature)]
     
-    if filtered_df.empty:
-        return 0
-    
     # aggregate values
-    score = aggreate_func(filtered_df['value'], df)
+    score = aggreate_func(filtered_df['value'], df, score_df)
     
     return score
 
 # aggregate total work experience
-def aggreate__total_work_experience(values, df):
+def aggreate__total_work_experience(values, df, score_df):
     value = values.sum()
         
     if 'work_experience_duration' in df.index:
@@ -268,8 +277,7 @@ def calculate_scores(df, criterias):
     
         criteria_weight = value['weight']
         criteria_agg_func = value['aggregate_func']
-        
-        score = calculate_critical_score(df, criteria_feature, criteria_agg_func)
+        score = calculate_critical_score(criteria_agg_func, df, criteria_feature, score_df)
         weighted_score = score * criteria_weight
         
         criteria_df = pd.DataFrame({
@@ -341,7 +349,7 @@ def aggreate_front_end_experience(values):
     return values.sum()
 
 # aggreate_project_experience
-def aggreate_project_experience(values, df):
+def aggreate_project_experience(values, df, score_df):
     # complexity_feature = "projects_\d+_complexity"
     # complexcity_df = df[df.index.str.match(complexity_feature)]
     # complexcity_mean = complexcity_df['value'].mean()
@@ -359,12 +367,16 @@ def aggreate_project_experience(values, df):
     
     # get work_experience_ratio
     work_experience_ratio = df.loc['work_experience_ratio']['value']
+    
+    if work_experience_ratio > 1:
+        work_experience_ratio = 1
+        
     work_experience_ratio = work_experience_ratio if work_experience_ratio is not None else 1
     value = values.sum()
     
     scaled_value = value * work_experience_ratio
     
-    return scaled_value / 12.5 * 10
+    return scaled_value
 
 # none aggregate function
 def none_aggreate(values, _):
@@ -541,12 +553,14 @@ def correct_employment_history(data):
 # preprocess_data
 def preprocess_projects(data):
     # process data.projects.experience_score = data.projects.contribution * (data.projects.complexity * data.projects.duration/12 )
+    total_projects = len(data['projects'])
+    total_projects_duration = 0
     for project in data['projects']:
         try:
             dureation = convert_wildcards_to_month(project['duration'])
             
             # define duration is 3 months
-            if dureation is None or dureation == 0:
+            if dureation is None or dureation < 3:
                 dureation = 3
             
             dureation_years = dureation / 12
@@ -557,8 +571,13 @@ def preprocess_projects(data):
             
         project['duration_years'] = dureation_years
         experience_score = project['contribution'] * (project['complexity'] * dureation_years)
+        st.write(f"Experience score: {experience_score} = {project['contribution']} * ({project['complexity']} * {dureation_years})")
         project['experience_score'] = experience_score
+        total_projects_duration += dureation_years
     
+    data['total_projects'] = total_projects
+    data['total_projects_duration'] = total_projects_duration
+        
     return data
 
 def preprocess_data(data, criterias=[]):
@@ -581,10 +600,12 @@ def calculate_total_score(df):
     # weighted mean of scores
     return (df['weighted_score'].sum() / df['weight'].sum())
 
-def aggreate_empoyment_duration(values, df):
+def aggreate_empoyment_duration(values, df, score_df):
     return values.sum() * 10
 
 def append_first_work_experience(df):
+    df = df.copy().dropna()
+    
     append_df = pd.DataFrame(columns=df.columns)
     
     # projects_0_start
@@ -620,7 +641,7 @@ def append_first_work_experience(df):
     # projects_4_duration_years
     work_experience_duration_partern = "projects_\d+_duration_years"
     work_experience_duration_values = df[df.index.str.match(work_experience_duration_partern)]
-        
+            
     # total project duration
     total_work_experience = work_experience_duration_values['value'].sum()
     
@@ -628,6 +649,7 @@ def append_first_work_experience(df):
     
     if not total_work_experience_df.empty:
         append_df = pd.concat([append_df, total_work_experience_df])
+        
         
     # set a ratio between work_experience_duration and total_work_experience
     if not work_experience_duration_df.empty and not total_work_experience_df.empty:
@@ -639,12 +661,27 @@ def append_first_work_experience(df):
 
     return append_df
 
+def education_aggreate(values, df, score_df):
+    current_score = calculate_total_score(score_df)
+    if values.empty:
+        return current_score
+    
+    return current_score + 10
+
+def certification_aggreate(values, df, score_df):
+    current_score = calculate_total_score(score_df)
+    if values.empty:
+        return current_score
+    
+    value = values.count() * 2.4
+    return current_score + value
+
 # Streamlit app
 def evaluate_resume(data, print=False):
     # define sample criteria
     criterias = [
         {
-          "name": "Employment Duration",
+            "name": "Employment Duration",
             # total_empoyment_experience 
             "feature": "total_empoyment_experience",
             'aggregate_func': aggreate_empoyment_duration,
@@ -671,7 +708,21 @@ def evaluate_resume(data, print=False):
             "aggregate_func": aggreate_project_experience,
             'preprocess_func': preprocess_projects,
             "min_value": 2,
-        }
+        },
+        {
+            "name": "Deegree",
+            # educations_education_1_institution
+            "feature": "educations_education_\d+_institution",
+            'aggregate_func': education_aggreate,
+            "weight": 1,
+        },
+        {
+            "name": "certifications",
+            # educations_certifications_1_name
+            "feature": "educations_certifications_\d+_name",
+            'aggregate_func': certification_aggreate,
+            "weight": 1,
+        },
     ]
     
     data_dict = json.loads(data)
@@ -703,6 +754,32 @@ def evaluate_resume(data, print=False):
     st.write("Extended data")
     # st.dataframe(extended_data, use_container_width=True)
     
+        
+    level_ranges = [
+        {"level": "Fresh-", "min": 10},
+        {"level": "Fresh", "min": 15},
+        {"level": "Fresh+", "min": 20},
+        
+        {"level": "Junior-", "min": 25},
+        {"level": "Junior", "min": 32},
+        {"level": "Junior+", "min": 39},
+        
+        {"level": "Mid-", "min": 45},
+        {"level": "Mid", "min": 52},
+        {"level": "Mid+", "min": 59},
+        
+        {"level": "Senior-", "min": 68},
+        {"level": "Senior", "min": 78},
+        {"level": "Senior+", "min": 88},
+    ]
+
+
+    # level_ranges_df = pd.DataFrame(level_ranges)
+    # level_ranges_df.set_index('level', inplace=True)
+    
+    # st.write("Level ranges")
+    # st.dataframe(level_ranges_df, use_container_width=True)
+    
     # enchance data
     enchanced_data = enchance_data(extended_data, criterias)
     st.write("Enchanced data")
@@ -716,24 +793,7 @@ def evaluate_resume(data, print=False):
     # total score
     total_score = calculate_total_score(scores_df)
     st.write(f"#### Total score: {total_score}")
-    
-    level_ranges = [
-        {"level": "Fresh-", "min": 0},
-        {"level": "Fresh", "min": 5},
-        {"level": "Fresh+", "min": 10},
-        
-        {"level": "Junior-", "min": 15},
-        {"level": "Junior", "min": 22},
-        {"level": "Junior+", "min": 29},
-        
-        {"level": "Mid-", "min": 35},
-        {"level": "Mid", "min": 42},
-        {"level": "Mid+", "min": 49},
-        
-        {"level": "Senior-", "min": 58},
-        {"level": "Senior", "min": 68},
-        {"level": "Senior+", "min": 78},
-    ]
+
     
     # final level
     level = get_level(total_score, level_ranges)
