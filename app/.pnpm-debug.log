@@ -1,0 +1,584 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "opensaas",
+      "dependencies": {
+        "@aws-sdk/client-s3": "^3.523.0",
+        "@aws-sdk/s3-request-presigner": "^3.523.0",
+        "@faker-js/faker": "8.3.1",
+        "@google-analytics/data": "4.1.0",
+        "@headlessui/react": "1.7.13",
+        "@tailwindcss/forms": "^0.5.3",
+        "@tailwindcss/typography": "^0.5.7",
+        "apexcharts": "^3.41.0",
+        "clsx": "^2.1.0",
+        "headlessui": "^0.0.0",
+        "node-fetch": "3.3.0",
+        "openai": "^4.24.1",
+        "prettier": "3.1.1",
+        "prettier-plugin-tailwindcss": "0.5.11",
+        "react": "^18.2.0",
+        "react-apexcharts": "^1.4.1",
+        "react-hot-toast": "^2.4.1",
+        "react-icons": "4.11.0",
+        "stripe": "11.15.0",
+        "tailwind-merge": "^2.2.1",
+        "wasp": "file:.wasp/out/sdk/wasp",
+        "zod": "3.22.4"
+      },
+      "devDependencies": {
+        "@types/express": "^4.17.13",
+        "@types/react": "^18.0.37",
+        "@types/react-router-dom": "^5.3.3",
+        "prisma": "4.16.2",
+        "typescript": "^5.1.0",
+        "vite": "^4.3.9"
+      }
+    },
+    "prefix": "/Users/minh/Documents/resume-radar/app"
+  },
+  "2 debug pnpm:context": {
+    "currentLockfileExists": false,
+    "storeDir": "/Users/minh/Library/pnpm/store/v3",
+    "virtualStoreDir": "/Users/minh/Documents/resume-radar/app/node_modules/.pnpm"
+  },
+  "3 debug pnpm:stage": {
+    "prefix": "/Users/minh/Documents/resume-radar/app",
+    "stage": "resolution_started"
+  },
+  "4 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@faker-js/faker/8.3.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@faker-js/faker",
+      "rawSpec": "8.3.1"
+    }
+  },
+  "5 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@faker-js/faker/8.3.1",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "6 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/node-fetch/3.3.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "node-fetch",
+      "rawSpec": "3.3.0"
+    }
+  },
+  "7 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/node-fetch/3.3.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "8 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/node-fetch/3.3.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "9 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/clsx/2.1.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "clsx",
+      "rawSpec": "^2.1.0"
+    }
+  },
+  "10 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/clsx/2.1.1",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "11 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/clsx/2.1.1",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "12 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@tailwindcss/forms/0.5.7",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@tailwindcss/forms",
+      "rawSpec": "^0.5.3"
+    }
+  },
+  "13 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@tailwindcss/forms/0.5.7",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "14 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/prettier/3.1.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "prettier",
+      "rawSpec": "3.1.1"
+    }
+  },
+  "15 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/prettier/3.1.1",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "16 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@tailwindcss/forms/0.5.7",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "17 warn pnpm:install-check": {
+    "message": "Unsupported engine for registry.npmjs.org/prettier-plugin-tailwindcss/0.5.11: wanted: {\"node\":\">=14.21.3\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"7.0.0-rc.2\"})",
+    "prefix": "/Users/minh/Documents/resume-radar/app"
+  },
+  "18 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/prettier-plugin-tailwindcss/0.5.11",
+    "wanted": {
+      "dependentId": ".",
+      "name": "prettier-plugin-tailwindcss",
+      "rawSpec": "0.5.11"
+    }
+  },
+  "19 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/prettier-plugin-tailwindcss/0.5.11",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "20 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/express/4.17.21",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/express",
+      "rawSpec": "^4.17.13"
+    }
+  },
+  "21 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/express/4.17.21",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "22 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/express/4.17.21",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "23 warn pnpm:install-check": {
+    "message": "Unsupported engine for registry.npmjs.org/@aws-sdk/client-s3/3.569.0: wanted: {\"node\":\">=16.0.0\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"7.0.0-rc.2\"})",
+    "prefix": "/Users/minh/Documents/resume-radar/app"
+  },
+  "24 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@aws-sdk/client-s3/3.569.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@aws-sdk/client-s3",
+      "rawSpec": "^3.523.0"
+    }
+  },
+  "25 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@aws-sdk/client-s3/3.569.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "26 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/prettier/3.1.1",
+    "size": 2163846,
+    "status": "started"
+  },
+  "27 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/apexcharts/3.49.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "apexcharts",
+      "rawSpec": "^3.41.0"
+    }
+  },
+  "28 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/apexcharts/3.49.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "29 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/apexcharts/3.49.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "30 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/prettier-plugin-tailwindcss/0.5.11",
+    "size": 607070,
+    "status": "started"
+  },
+  "31 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/react/18.3.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/react",
+      "rawSpec": "^18.0.37"
+    }
+  },
+  "32 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/react/18.3.1",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "33 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/react/18.3.1",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "34 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/headlessui/0.0.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "headlessui",
+      "rawSpec": "^0.0.0"
+    }
+  },
+  "35 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/headlessui/0.0.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "36 warn pnpm:install-check": {
+    "message": "Unsupported engine for registry.npmjs.org/@aws-sdk/s3-request-presigner/3.569.0: wanted: {\"node\":\">=16.0.0\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"7.0.0-rc.2\"})",
+    "prefix": "/Users/minh/Documents/resume-radar/app"
+  },
+  "37 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@aws-sdk/s3-request-presigner/3.569.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@aws-sdk/s3-request-presigner",
+      "rawSpec": "^3.523.0"
+    }
+  },
+  "38 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@aws-sdk/s3-request-presigner/3.569.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "39 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/headlessui/0.0.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "40 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/@faker-js/faker/8.3.1",
+    "size": 2413704,
+    "status": "started"
+  },
+  "41 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@types/react-router-dom/5.3.3",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@types/react-router-dom",
+      "rawSpec": "^5.3.3"
+    }
+  },
+  "42 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/react-router-dom/5.3.3",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "43 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@types/react-router-dom/5.3.3",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "44 warn pnpm:install-check": {
+    "message": "Unsupported engine for registry.npmjs.org/vite/4.5.3: wanted: {\"node\":\"^14.18.0 || >=16.0.0\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"7.0.0-rc.2\"})",
+    "prefix": "/Users/minh/Documents/resume-radar/app"
+  },
+  "45 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/vite/4.5.3",
+    "wanted": {
+      "dependentId": ".",
+      "name": "vite",
+      "rawSpec": "^4.3.9"
+    }
+  },
+  "46 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/vite/4.5.3",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "47 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/vite/4.5.3",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "48 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/react-icons/4.11.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "react-icons",
+      "rawSpec": "4.11.0"
+    }
+  },
+  "49 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "50 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/@aws-sdk/client-s3/3.569.0",
+    "size": 338696,
+    "status": "started"
+  },
+  "51 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/openai/4.40.2",
+    "wanted": {
+      "dependentId": ".",
+      "name": "openai",
+      "rawSpec": "^4.24.1"
+    }
+  },
+  "52 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/openai/4.40.2",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "53 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/openai/4.40.2",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "found_in_store"
+  },
+  "54 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "size": 21055700,
+    "status": "started"
+  },
+  "55 debug pnpm:fetching-progress": {
+    "downloaded": 4229,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "56 debug pnpm:fetching-progress": {
+    "downloaded": 8458,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "57 debug pnpm:fetching-progress": {
+    "downloaded": 12687,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "58 debug pnpm:fetching-progress": {
+    "downloaded": 16916,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "59 debug pnpm:fetching-progress": {
+    "downloaded": 21145,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "60 debug pnpm:fetching-progress": {
+    "downloaded": 25374,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "61 debug pnpm:fetching-progress": {
+    "downloaded": 29603,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "62 debug pnpm:fetching-progress": {
+    "downloaded": 32768,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "63 debug pnpm:fetching-progress": {
+    "downloaded": 36997,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "64 debug pnpm:fetching-progress": {
+    "downloaded": 41226,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "65 debug pnpm:fetching-progress": {
+    "downloaded": 45455,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "66 debug pnpm:fetching-progress": {
+    "downloaded": 49684,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "67 debug pnpm:fetching-progress": {
+    "downloaded": 53913,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "68 debug pnpm:fetching-progress": {
+    "downloaded": 58142,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "69 debug pnpm:fetching-progress": {
+    "downloaded": 62371,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "70 debug pnpm:fetching-progress": {
+    "downloaded": 65536,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "71 debug pnpm:fetching-progress": {
+    "downloaded": 69765,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "72 debug pnpm:fetching-progress": {
+    "downloaded": 73994,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "73 debug pnpm:fetching-progress": {
+    "downloaded": 78223,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "74 debug pnpm:fetching-progress": {
+    "downloaded": 82452,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "75 debug pnpm:fetching-progress": {
+    "downloaded": 86681,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "76 debug pnpm:fetching-progress": {
+    "downloaded": 90910,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "77 debug pnpm:fetching-progress": {
+    "downloaded": 95139,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "78 debug pnpm:fetching-progress": {
+    "downloaded": 98304,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "79 debug pnpm:fetching-progress": {
+    "downloaded": 102533,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "80 debug pnpm:fetching-progress": {
+    "downloaded": 106762,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "81 debug pnpm:fetching-progress": {
+    "downloaded": 110991,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "82 debug pnpm:fetching-progress": {
+    "downloaded": 115220,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "83 debug pnpm:fetching-progress": {
+    "downloaded": 119449,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "84 debug pnpm:fetching-progress": {
+    "downloaded": 123678,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "85 debug pnpm:fetching-progress": {
+    "downloaded": 127907,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "86 debug pnpm:fetching-progress": {
+    "downloaded": 131072,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "87 debug pnpm:fetching-progress": {
+    "downloaded": 135301,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "88 debug pnpm:fetching-progress": {
+    "downloaded": 139530,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "89 debug pnpm:fetching-progress": {
+    "downloaded": 143759,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "90 debug pnpm:fetching-progress": {
+    "downloaded": 147988,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "91 debug pnpm:fetching-progress": {
+    "downloaded": 152217,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "92 debug pnpm:fetching-progress": {
+    "downloaded": 156446,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "93 debug pnpm:fetching-progress": {
+    "downloaded": 160675,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "94 debug pnpm:fetching-progress": {
+    "downloaded": 163840,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "95 debug pnpm:fetching-progress": {
+    "downloaded": 178398,
+    "packageId": "registry.npmjs.org/react-icons/4.11.0",
+    "status": "in_progress"
+  },
+  "96 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/tailwind-merge/2.3.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "tailwind-merge",
+      "rawSpec": "^2.2.1"
+    }
+  },
+  "97 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/tailwind-merge/2.3.0",
+    "requester": "/Users/minh/Documents/resume-radar/app",
+    "status": "resolved"
+  },
+  "98 error pnpm": {
+    "code": "ERR_PNPM_LINKED_PKG_DIR_NOT_FOUND",
+    "pkgsStack": [],
+    "err": {
+      "name": "pnpm",
+      "message": "Could not install from \"/Users/minh/Documents/resume-radar/app/.wasp/out/sdk/wasp\" as it does not exist.",
+      "code": "ERR_PNPM_LINKED_PKG_DIR_NOT_FOUND",
+      "stack": "pnpm: Could not install from \"/Users/minh/Documents/resume-radar/app/.wasp/out/sdk/wasp\" as it does not exist.\n    at resolveLocal (/snapshot/dist/pnpm.cjs)\n    at async Object.resolve (/snapshot/dist/pnpm.cjs)\n    at async run (/snapshot/dist/pnpm.cjs)"
+    }
+  }
+}
