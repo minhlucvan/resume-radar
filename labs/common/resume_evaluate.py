@@ -46,7 +46,7 @@ def build_dataframe(flat_dict):
 def process_data_with_regex(df, pattern, callback):
 
     # Filter DataFrame to include only rows where index matches the pattern
-    filtered_df = df[df.index.str.match(pattern)]
+    filtered_df = df[df.index.str.match(pattern)] if pattern != '*' else df
     
     if filtered_df.empty:
         return df
@@ -234,19 +234,20 @@ def progress_resume_features(df):
 # calculate_critical_score
 def calculate_critical_score(aggreate_func, df, feature, weight, score_df):
     # filter dataframe
-    filtered_df = df[df.index.str.match(feature)]
+    filtered_df = df[df.index.str.match(feature)] if feature != '*' else df
     
     # aggregate values
     score, weight = aggreate_func(filtered_df['value'], df, score_df, weight)
     
     return score, weight
 
-# aggregate total work experience
-def aggreate__total_work_experience(values, df, score_df, weight):
-    value = values.sum()
-        
-    if 'work_experience_duration' in df.index:
-        value = df.loc['work_experience_duration']['value']  
+def get_total_experience(df):
+    if 'total_empoyment_duration' in df.index:
+        return df.loc['total_empoyment_duration']['value']
+    elif 'total_empoyment_duration' in df.index:
+        return df.loc['total_empoyment_duration']['value']
+    elif 'work_experience_duration' in df.index:
+        return df.loc['work_experience_duration']['value']  
     elif 'first_work_experience' in df.index and 'last_work_experience' in df.index:
         first_work_apperance = df.loc['first_work_experience']['value']
         last_work_apperance = df.loc['last_work_experience']['value']
@@ -256,8 +257,13 @@ def aggreate__total_work_experience(values, df, score_df, weight):
         
         total_experience = last_work_apperance - first_work_apperance
         
-        value = total_experience.days / 365
-        
+        return total_experience.days / 365
+    return 0
+
+# aggregate total work experience
+def aggreate__total_work_experience(values, df, score_df, weight):
+    value = get_total_experience(df)
+    
     return value * 10, weight
 
 # aggregate techstack range
@@ -317,7 +323,7 @@ def enchance_data(df, criterias):
         pattern = value['feature']
         
         # Filter DataFrame to include only rows where index matches the pattern
-        filtered_df = df[df.index.str.match(pattern)]
+        filtered_df = df[df.index.str.match(pattern)] if pattern != '*' else df
         
         if filtered_df.empty:
             return df
@@ -360,30 +366,28 @@ def append_features(df, criterias):
 def aggreate_front_end_experience(values):
     return values.sum()
 
-# aggreate_project_experience
-def aggreate_project_experience(values, df, score_df, weight):
-    # complexity_feature = "projects_\d+_complexity"
-    # complexcity_df = df[df.index.str.match(complexity_feature)]
-    # complexcity_mean = complexcity_df['value'].mean()
+def calculate_work_experience_ratio(df):
+    total_experience = get_total_experience(df)
+    total_project_duration = df.loc['total_projects_duration']['value']
+    work_experience_ratio = total_experience / total_project_duration if total_project_duration > 0 else float('inf')
     
-    # contribution_feature = "projects_\d+_contribution"
-    # contribution_df = df[df.index.str.match(contribution_feature)]
-    # contribution_mean = contribution_df['value'].mean()
-    
-    # # work_experience_duration
-    # work_experience_duration = df.loc['work_experience_duration']['value']
-    
-    # value = work_experience_duration * (complexcity_mean * contribution_mean)
-    
-    # return value
-    
-    # get work_experience_ratio
-    work_experience_ratio = df.loc['work_experience_ratio']['value']
-    
-    if work_experience_ratio > 1:
+    # Inf = 1
+    if work_experience_ratio == float('inf'):
         work_experience_ratio = 1
+    
+    if work_experience_ratio > 3:
+        work_experience_ratio = 3
         
     work_experience_ratio = work_experience_ratio if work_experience_ratio is not None else 1
+    
+    return work_experience_ratio
+    
+# aggreate_project_experience
+def aggreate_project_experience(values, df, score_df, weight):
+    
+    # get work_experience_ratio
+    work_experience_ratio = calculate_work_experience_ratio(df)
+    
     value = values.sum()
     
     scaled_value = value * work_experience_ratio
@@ -472,6 +476,7 @@ def calc_employment_duration(data):
         duration = end_date - start_date
         duration_years = duration.days / 365 if isinstance(duration, datetime.timedelta) else duration
         total_duration += duration_years
+        employment['duration'] = duration_years
     
     data['total_empoyment_duration'] = total_duration
     
@@ -496,6 +501,7 @@ def calc_employment_experience(data):
         
         duration = end_date - start_date
         duration_years = duration.days / 365 if isinstance(duration, datetime.timedelta) else duration
+        employment['duration'] = duration_years
         total_duration += duration_years
         
         # caculate level
@@ -515,8 +521,8 @@ def calc_employment_experience(data):
         total_experience += experience
         
     
-    data['total_empoyment_experience'] = total_duration
-    data['total_empoyment_duration'] = total_experience
+    data['total_empoyment_experience'] = total_experience
+    data['total_empoyment_duration'] = total_duration
     
     return data
 
@@ -660,15 +666,6 @@ def append_first_work_experience(df):
     
     if not total_work_experience_df.empty:
         append_df = pd.concat([append_df, total_work_experience_df])
-        
-        
-    # set a ratio between work_experience_duration and total_work_experience
-    if not work_experience_duration_df.empty and not total_work_experience_df.empty:
-        work_experience_ratio = work_experience_duration_df['value'].values[0] / total_work_experience_df['value'].values[0]
-        work_experience_ratio_df = pd.DataFrame([work_experience_ratio], columns=append_df.columns, index=['work_experience_ratio'])
-        
-        if not work_experience_ratio_df.empty:
-            append_df = pd.concat([append_df, work_experience_ratio_df])
 
     return append_df
 
@@ -772,6 +769,9 @@ def build_level_step(level_ranges, color_scale=None):
         steps.append({'range': [item["min"], 100], 'color': color})
     return steps
 
+def describe_work_experience(data, scores_df, value):
+    return ""
+
 # plot_skill_level
 # plot chart with score and level ranges
 # a progress bar chart with score and level ranges
@@ -848,7 +848,7 @@ def evaluate_resume(data_dict, print=False):
     # define sample criteria
     criterias = [
         {
-            "name": "Employment Duration",
+            "name": "Employment Experience",
             # total_empoyment_experience 
             "feature": "total_empoyment_experience",
             'aggregate_func': aggreate_empoyment_duration,
@@ -859,13 +859,13 @@ def evaluate_resume(data_dict, print=False):
         {
             "name": "Work Experience",
             # properties_WorkExperiences_totalExperiences
-            "feature": "total_empoyment_duration",
+            "feature": "*",
             "weight": 1,
             # match all features
             'append_feature': '*',
             'append_func': append_first_work_experience,
             "aggregate_func": aggreate__total_work_experience,
-            "describe_func": describe_empoyment_history,
+            "describe_func": describe_work_experience,
             "min_value": 2,
             "max_value": 5
         },
