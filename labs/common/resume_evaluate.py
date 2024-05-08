@@ -794,16 +794,16 @@ def plot_skill_level(score, level_ranges):
     #e16050
     #d43d51
     color_scale = {
-        "Unknown": "#008728",
-        "Fresh-": "#00876c",
-        "Fresh": "#439a72",
-        "Fresh+": "#6aad78",
+        "Intern": "#008728",
+        "Fresher-": "#00876c",
+        "Fresher": "#439a72",
+        "Fresher+": "#6aad78",
         "Junior-": "#8fbf80",
         "Junior": "#b4d18b",
         "Junior+": "#d9e398",
-        "Mid-": "#fff4a8",
-        "Mid": "#fbd88a",
-        "Mid+": "#f7bc72",
+        "Middle-": "#fff4a8",
+        "Middle": "#fbd88a",
+        "Middle+": "#f7bc72",
         "Senior-": "#f19f60",
         "Senior": "#eb8055",
         "Senior+": "#e16050",
@@ -900,7 +900,7 @@ def evaluate_resume(data, print=False):
         },
     ]
     
-    data_dict = json.loads(data)
+    data_dict = json.loads(data) if isinstance(data, str) else data
     
     if isinstance(data_dict, str):
         data_dict = json.loads(data_dict)
@@ -921,29 +921,31 @@ def evaluate_resume(data, print=False):
     # clean data
     clean_data = progress_resume_features(df)
     
-    st.write("Cleaned data")
-    # st.dataframe(clean_data, use_container_width=True)
+    if print:
+        st.write("Cleaned data")
+        st.dataframe(clean_data, use_container_width=True)
     
     # append new features
     extended_data = append_features(clean_data, criterias)
-    st.write("Extended data")
-    # st.dataframe(extended_data, use_container_width=True)
+    if print:
+        st.write("Extended data")
+        st.dataframe(extended_data, use_container_width=True)
     
         
     level_ranges = [
-        {"level": "Unknown", "min": 0},
+        {"level": "Intern", "min": 0},
         
-        {"level": "Fresh-", "min": 10},
-        {"level": "Fresh", "min": 15},
-        {"level": "Fresh+", "min": 20},
+        {"level": "Fresher-", "min": 10},
+        {"level": "Fresher", "min": 15},
+        {"level": "Fresher+", "min": 20},
         
         {"level": "Junior-", "min": 25},
         {"level": "Junior", "min": 32},
         {"level": "Junior+", "min": 39},
         
-        {"level": "Mid-", "min": 45},
-        {"level": "Mid", "min": 52},
-        {"level": "Mid+", "min": 59},
+        {"level": "Middle-", "min": 45},
+        {"level": "Middle", "min": 52},
+        {"level": "Middle+", "min": 59},
         
         {"level": "Senior-", "min": 68},
         {"level": "Senior", "min": 78},
@@ -963,8 +965,10 @@ def evaluate_resume(data, print=False):
     
     # enchance data
     enchanced_data = enchance_data(extended_data, criterias)
-    st.write("Enchanced data")
-    st.dataframe(enchanced_data, use_container_width=True)
+    
+    if print:
+        st.write("Enchanced data")
+        st.dataframe(enchanced_data, use_container_width=True)
     
     # Calculate scores
     scores_df = calculate_scores(enchanced_data, criterias)
@@ -983,16 +987,8 @@ def evaluate_resume(data, print=False):
     st.write("Scores")
     st.dataframe(scores_df, use_container_width=True)
     
-    st.write(f"#### Reference data")
-    is_show_description = st.checkbox("Show reference", value=False)
     descriptions = get_criteria_descriptions(processed_data, scores_df, criterias)
-    
-    if is_show_description:
-        for description in descriptions:
-            st.write(f"###### {description['name']}")
-            st.markdown(description['description'], unsafe_allow_html=True)
-            st.html("<hr>")
 
-    return level
+    return level, descriptions
     
 

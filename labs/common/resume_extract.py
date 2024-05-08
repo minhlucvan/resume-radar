@@ -18,6 +18,12 @@ import requests
 import getpass
 import os
 
+import hashlib
+
+def hash_pdf_url(url):   
+    return hashlib.md5(url.encode()).hexdigest()
+
+
 load_dotenv()
 
 # get llm model
@@ -491,15 +497,38 @@ def load_pdf_from_url(pdf_url):
     response = requests.get(pdf_url)
     pdf = response.content
     
+    pdf_hash = hash_pdf_url(pdf_url)
+    
+    pdf_filename = f"{pdf_hash}.pdf"
+    
+    pdf_path = os.path.join("data", 'dumb', pdf_filename)
+    
     # create a file from the pdf content
-    with open('temp.pdf', 'wb') as f:
+    with open(pdf_path, 'wb') as f:
         f.write(pdf)
     
-    file = open('temp.pdf', 'rb')
+    file = open(pdf_path, 'rb')
     
     return file
 
-def extract_resume(url_or_file):
+def has_cached_data(pdf_url):
+    pdf_hash = hash_pdf_url(pdf_url)
+    pdf_filename = f"{pdf_hash}.json"
+    pdf_path = os.path.join("data", 'dumb', pdf_filename)
+    
+    return os.path.exists(pdf_path)
+
+def get_cached_data(pdf_url):
+    pdf_hash = hash_pdf_url(pdf_url)
+    pdf_filename = f"{pdf_hash}.json"
+    pdf_path = os.path.join("data", 'dumb', pdf_filename)
+    
+    with open(pdf_path, 'r') as f:
+        data = json.load(f)
+    
+    return data
+
+def extract_resume(url_or_file, silent=True):
 
     pdf_url = None
     # upload a pdf file
@@ -524,12 +553,15 @@ def extract_resume(url_or_file):
 
     with st.spinner("Extracting text from PDF..."):
         text = extract_pdf_text(pdf)
-        st.write('Extracted text:')
+        if not silent:
+            st.write('Extracted text:')
+            st.text_area("Extracted text", text)
 
     with st.spinner("Extracting data from text..."):
         data = extract_data(text)
-        st.write('Extracted data:')
-        st.write(data)
+        if not silent:
+            st.write('Extracted data:')
+            st.text_area(data)
 
     # extract yml from structured data
     with st.spinner("Extracting yml from structured data..."):
@@ -537,7 +569,9 @@ def extract_resume(url_or_file):
             json_data = extract_json(data)
             # combine all the extracted data into a dictionary
             parsed_yml = json.loads(json_data)
-            st.write('Extracted Json:')
+            if not silent:
+                st.write('Extracted Json:')
+                st.text_area("Extracted Json", json_data)
         except Exception as e:
             st.write('Error extracting json data:', e)
             st.text_area("Extracted Json", json_data)
@@ -546,17 +580,20 @@ def extract_resume(url_or_file):
     with st.spinner("Extracting project data..."):
         try:
             project_data = extract_project_data(text)
-            st.text_area("Extracted project data", project_data)
             parsed_project_data = json.loads(project_data)
-            st.write('Extracted project data:')
+            if not silent:
+                st.write('Extracted project data:')
+                st.write(parsed_project_data)
         except Exception as e:
             st.write('Error extracting project data:', e)
             st.text_area("Extracted project data", project_data)
         
     with st.spinner("Extracting education data..."):
         education_data = extract_education_data(text)
-        st.write('Extracted education data:')
-        st.text_area("Extracted education data", education_data)
+        if not silent:
+            st.write('Extracted education data:')
+            st.text_area("Extracted education data", education_data)
+        
         parsed_education_data = json.loads(education_data)
 
     extracted_data = {

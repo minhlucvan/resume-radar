@@ -45,24 +45,26 @@ Finaly, we could map the total score to a predefined level range, indicating the
 
 ## Score Ranges and Explanation
 
-| Level   | Score Range | Explanation                |
-| ------- | ----------- | -------------------------- |
-| Fresh-  | 0-4         | Limited experience         |
-| Fresh   | 5-9         | Entry-level proficiency    |
-| Fresh+  | 10-14       | Developing expertise       |
-| Junior- | 15-21       | Early career progression   |
-| Junior  | 22-28       | Proficient at junior level |
-| Junior+ | 29-34       | Advanced junior level      |
-| Mid-    | 35-41       | Mid-level proficiency      |
-| Mid     | 42-48       | Proficient at mid-level    |
-| Mid+    | 49-57       | Advanced mid-level         |
-| Senior- | 58-67       | Senior-level proficiency   |
-| Senior  | 68-77       | Proficient at senior level |
-| Senior+ | 78+         | Advanced senior level      |
+| Level     | Score Range |
+| --------- | ----------- |
+| Intern    | 0-9         |
+| Fresher-  | 10-14       |
+| Fresher   | 15-19       |
+| Fresher+  | 20-24       |
+| Junior-   | 25-31       |
+| Junior    | 32-38       |
+| Junior+   | 39-44       |
+| Middle-   | 45-51       |
+| Middle    | 52-58       |
+| Middle+   | 59-67       |
+| Senior-   | 68-77       |
+| Senior    | 78-87       |
+| Senior+   | 88-97       |
+| Principal | 98+         |
 
 ## Usage
 
-To run the app locally, execute `streamlit run main.py` in your terminal.
+To run the app locally, execute `streamlit run app.py` in your terminal.
 
 ## Acknowledgments
 
