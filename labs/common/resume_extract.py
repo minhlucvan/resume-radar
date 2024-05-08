@@ -1,18 +1,12 @@
 # chat_pdf.py
 import streamlit as st
 from dotenv import load_dotenv
-import pickle
 from PyPDF2 import PdfReader
-from streamlit_extras.add_vertical_space import add_vertical_space
-from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.llms import OpenAI
-from langchain.chains import LLMChain
 import os
-from langchain import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 import google.generativeai as genai
 import json
-import yaml
 import requests
 
 import getpass

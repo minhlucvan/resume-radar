@@ -2,7 +2,6 @@ import streamlit as st
 from common import resume_evaluate
 from common import resume_extract
 import json
-import os
 import time
 import hashlib
 

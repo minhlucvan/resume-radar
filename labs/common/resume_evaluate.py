@@ -1,9 +1,6 @@
 import pandas as pd
 import streamlit as st
 import pytimeparse as ptp
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder
-from sklearn.decomposition import PCA
 import dateparser
 import datetime
 import json
