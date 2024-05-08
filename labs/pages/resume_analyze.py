@@ -16,7 +16,7 @@ def dumb_data(data, pdf_url=""):
     file_path = f"data/dumb/{filename}.json"
     
     with open(file_path, "w") as f:
-        data_json = json.loads(data) if isinstance(data, str) else data
+        data_json = json.loads(data) if isinstance(data, str) or isinstance(data, bytes) else data
         
         data_json["pdf_url"] = pdf_url
         
