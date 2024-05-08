@@ -12,10 +12,18 @@ def main():
         # Load JSON file
         data = uploaded_file.read()
         
-        evaluation = resume_evaluate.evaluate_resume(data, print=True)
-            
+        evaluation, descriptions = resume_evaluate.evaluate_resume(data)
+        
         st.write("### Final level: ", evaluation)
         
+        is_show_description = st.checkbox("Show reference", value=False)
+        
+        if is_show_description:
+            st.write(f"#### References")
+            for description in descriptions:
+                st.write(f"###### {description['name']}")
+                st.markdown(description['description'], unsafe_allow_html=True)
+                st.html("<hr>")
 
 if __name__ == "__main__":
     main()
