@@ -769,7 +769,7 @@ def describe_work_experience(data, scores_df, value):
 # plot_skill_level
 # plot chart with score and level ranges
 # a progress bar chart with score and level ranges
-def plot_skill_level(score, level_ranges):
+def plot_skill_level(score, level_ranges, title="Skill Level"):
     # Define the color scale
     #00876c
     #439a72
@@ -804,6 +804,7 @@ def plot_skill_level(score, level_ranges):
     fig = go.Figure(go.Indicator(
         mode = "gauge+number",
         value = score,
+        title = {'text': title},
         domain = {'x': [0, 1], 'y': [0, 1]},
         gauge = {
             'axis': {'range': [None, 100]},
@@ -967,8 +968,10 @@ def evaluate_resume(data_dict, print=False):
     
     # final level
     level = get_level(total_score, level_ranges)
+    
+    candidate_name = enchanced_data.loc['properties_General_name']['value'] if 'properties_General_name' in enchanced_data.index else "Unknown"
 
-    fig = plot_skill_level(total_score, level_ranges)
+    fig = plot_skill_level(total_score, level_ranges, candidate_name)
     
     st.plotly_chart(fig, use_container_width=True)
     
