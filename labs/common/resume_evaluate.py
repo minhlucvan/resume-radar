@@ -614,55 +614,6 @@ def calculate_total_score(df):
 def aggreate_empoyment_duration(values, df, score_df, weight):
     return values.sum() * 10, weight
 
-def append_first_work_experience(df):
-    df = df.copy().dropna()
-    
-    append_df = pd.DataFrame(columns=df.columns)
-    
-    # projects_0_start
-    start_project_partern = "projects_\d+_start"
-    start_project_partern_df = df[df.index.str.match(start_project_partern)].dropna()
-    
-    # get first work experience by min value
-    first_work_experience = start_project_partern_df[start_project_partern_df['value'] == start_project_partern_df['value'].min()]
-    first_work_experience_df = pd.DataFrame([first_work_experience.values[0]], columns=append_df.columns, index=['first_work_experience'])
-    
-    if not first_work_experience_df.empty:
-        append_df = pd.concat([append_df, first_work_experience_df])
-    
-    # projects_0_end
-    end_project_partern = "projects_\d+_end"
-    end_project_partern_df = df[df.index.str.match(end_project_partern)].dropna()
-    
-    # last work experience is the max value
-    last_work_experience_values = end_project_partern_df[end_project_partern_df['value'] == end_project_partern_df['value'].max()]
-    last_work_experience_df = pd.DataFrame([last_work_experience_values.values[0]], columns=append_df.columns, index=['last_work_experience'])
-    
-    if not last_work_experience_df.empty:    
-        append_df = pd.concat([append_df, last_work_experience_df])
-        
-    if not last_work_experience_df.empty and not first_work_experience_df.empty:
-        work_experience_duration = last_work_experience_df['value'].values[0] - first_work_experience_df['value'].values[0]
-        work_experience_duration_value = work_experience_duration.days / 365 if isinstance(work_experience_duration, datetime.timedelta) else work_experience_duration
-        work_experience_duration_df = pd.DataFrame([work_experience_duration_value], columns=append_df.columns, index=['work_experience_duration'])
-        
-        if not work_experience_duration_df.empty:
-            append_df = pd.concat([append_df, work_experience_duration_df])
-    
-    # projects_4_duration_years
-    work_experience_duration_partern = "projects_\d+_duration_years"
-    work_experience_duration_values = df[df.index.str.match(work_experience_duration_partern)]
-            
-    # total project duration
-    total_work_experience = work_experience_duration_values['value'].sum()
-    
-    total_work_experience_df = pd.DataFrame([total_work_experience], columns=append_df.columns, index=['total_work_experience'])
-    
-    if not total_work_experience_df.empty:
-        append_df = pd.concat([append_df, total_work_experience_df])
-
-    return append_df
-
 def education_aggreate(values, df, score_df, weight):
     current_score = calculate_total_score(score_df)
     if values.empty:
@@ -858,7 +809,6 @@ def evaluate_resume(data_dict, print=False):
             "weight": 1,
             # match all features
             'append_feature': '*',
-            'append_func': append_first_work_experience,
             "aggregate_func": aggreate__total_work_experience,
             "describe_func": describe_work_experience,
             "min_value": 2,
