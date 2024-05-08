@@ -23,7 +23,8 @@ def main():
             for description in descriptions:
                 st.write(f"###### {description['name']}")
                 st.markdown(description['description'], unsafe_allow_html=True)
-                st.html("<hr>")
+                st.text("")
+                
 
 if __name__ == "__main__":
     main()
