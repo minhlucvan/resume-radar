@@ -32,44 +32,43 @@ def main():
     
     is_use_previous = st.checkbox("Use previous data", value=True)
     
-    # start button
-    if st.button("Start analysis"):
-        if pdf_url == "" and pdf_file is None:
-            st.write("Please enter the URL of the PDF file or upload a PDF file.")
-            st.stop()
+    if pdf_url == "" and pdf_file is None:
+        st.write("Please enter the URL of the PDF file or upload a PDF file.")
+        st.stop()
+
+    pdf = None
     
-        pdf = None
+    if pdf_file is not None:
+        pdf = pdf_file
+    
+    if pdf_url is not None and pdf_url != "":
+        pdf = pdf_url
+    
+    if pdf is None:
+        st.stop()
+    
+    with st.spinner("Extracting resume data..."):
+        cached_data = resume_extract.get_cached_data(pdf) if pdf_url != "" and resume_extract.has_cached_data(pdf) else None
+        data = resume_extract.extract_resume(pdf) if cached_data is None or not is_use_previous else cached_data
         
-        if pdf_file is not None:
-            pdf = pdf_file
+        dumb_data(data, pdf_url)
         
-        if pdf_url is not None and pdf_url != "":
-            pdf = pdf_url
+    st.markdown(data['data'], unsafe_allow_html=True)
+    
+    with st.spinner("Evaluating resume..."):
+        st.write("# Results")
+        evaluation, descriptions = resume_evaluate.evaluate_resume(data)
         
-        if pdf is None:
-            st.stop()
+        st.write("### Final level: ", evaluation)
         
-        with st.spinner("Extracting resume data..."):
-            cached_data = resume_extract.get_cached_data(pdf) if pdf_url != "" and resume_extract.has_cached_data(pdf) else None
-            data = resume_extract.extract_resume(pdf) if cached_data is None or not is_use_previous else cached_data
-            
-            dumb_data(data, pdf_url)
-            
-        st.markdown(data['data'], unsafe_allow_html=True)
+        is_show_description = st.checkbox("Show reference", value=False)
         
-        with st.spinner("Evaluating resume..."):
-            evaluation, descriptions = resume_evaluate.evaluate_resume(data)
-            
-            st.write("### Final level: ", evaluation)
-            
-            is_show_description = st.checkbox("Show reference", value=False)
-            
-            if is_show_description:
-                st.write(f"#### References")
-                for description in descriptions:
-                    st.write(f"###### {description['name']}")
-                    st.markdown(description['description'], unsafe_allow_html=True)
-                    st.text("")
+        if is_show_description:
+            st.write(f"#### References")
+            for description in descriptions:
+                st.write(f"###### {description['name']}")
+                st.markdown(description['description'], unsafe_allow_html=True)
+                st.text("")
     
     
 if __name__ == '__main__':

@@ -1,5 +1,6 @@
 import streamlit as st
 from common import resume_evaluate
+from common import resume_extract
 
 
 # Streamlit app
@@ -12,7 +13,11 @@ def main():
         # Load JSON file
         data = uploaded_file.read()
         
+        data = resume_extract.load_data(data)
+        
         st.markdown(data['data'], unsafe_allow_html=True)
+        
+        st.write("# Results")
         
         evaluation, descriptions = resume_evaluate.evaluate_resume(data)
         

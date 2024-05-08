@@ -844,7 +844,7 @@ def plot_skill_level(score, level_ranges):
     return fig
 
 # Streamlit app
-def evaluate_resume(data, print=False):
+def evaluate_resume(data_dict, print=False):
     # define sample criteria
     criterias = [
         {
@@ -896,16 +896,6 @@ def evaluate_resume(data, print=False):
             "weight": 1,
         },
     ]
-    
-    data_dict = json.loads(data) if isinstance(data, str) else data
-    
-        
-    # bytes to string
-    if isinstance(data_dict, bytes):
-        data_dict = data_dict.decode('utf-8')
-    
-    if isinstance(data_dict, str):
-        data_dict = json.loads(data_dict)
 
     if print:
         st.write(data_dict['data'])

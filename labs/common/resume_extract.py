@@ -522,6 +522,18 @@ def has_cached_data(pdf_url):
     
     return os.path.exists(pdf_path)
 
+def load_data(data):
+    data_dict = json.loads(data) if isinstance(data, str) else data
+    
+    # bytes to string
+    if isinstance(data_dict, bytes):
+        data_dict = data_dict.decode('utf-8')
+    
+    if isinstance(data_dict, str):
+        data_dict = json.loads(data_dict)
+    
+    return data_dict
+
 def get_cached_data(pdf_url):
     pdf_hash = hash_pdf_url(pdf_url)
     pdf_filename = f"{pdf_hash}.json"
