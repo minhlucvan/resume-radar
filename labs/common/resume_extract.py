@@ -11,6 +11,7 @@ import requests
 
 import getpass
 import os
+import re
 
 import hashlib
 
@@ -293,7 +294,10 @@ The "level" field should use integer values to represent the professional level 
 
     # get content ```json content ```
     json_content = response.replace('```json\n', '').replace('```', '')
-
+    
+    # remove any // comments to the end of the line
+    json_content = re.sub(r'//.*', '', json_content)
+    
     return json_content
 
 
@@ -388,6 +392,9 @@ JSON Response Structure:
 
     # extract content ```json content ```
     json_content = response.replace('```json\n', '').replace('```', '')
+    
+    # remove any // comments to the end of the line
+    json_content = re.sub(r'//.*', '', json_content)
 
     return json_content    
 
@@ -482,6 +489,9 @@ Respond in JSON format with the following structure for each project:
 
     # extract content ```json content ```
     json_content = response.replace('```json\n', '').replace('```', '')
+    
+    # remove any // comments to the end of the line
+    json_content = re.sub(r'//.*', '', json_content)
 
     return json_content
 

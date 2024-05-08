@@ -802,7 +802,7 @@ def evaluate_resume(data_dict, print=False):
             'aggregate_func': aggreate_empoyment_duration,
             "preprocess_func": preprocess_empoyment_history,
             'describe_func': describe_empoyment_history,
-            'weight': 1,
+            'weight': 0,
         },
         {
             "name": "Work Experience",
