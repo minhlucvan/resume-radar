@@ -495,6 +495,16 @@ def load_pdf_from_url(pdf_url):
     
     pdf_filename = f"{pdf_hash}.pdf"
     
+    data_path = os.path.join("data")
+    
+    if not os.path.exists(data_path):
+        os.makedirs(data_path)
+    
+    dir_path = os.path.join("data", 'dumb')
+    
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    
     pdf_path = os.path.join("data", 'dumb', pdf_filename)
     
     # create a file from the pdf content
