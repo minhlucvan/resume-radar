@@ -638,13 +638,13 @@ def find_level(score, level_ranges):
         level = item["level"]
     return "Principal"
 
-def describe_empoyment_history(data, scores_df, value):
+def describe_empoyment_history(data, df, scores_df, value):
     empoyment_values = data['properties']['EmploymentHistory']
     empoyment_df = pd.DataFrame(empoyment_values)
     
     return empoyment_df.to_markdown()
 
-def describe_project_experience(data, scores_df, value):
+def describe_project_experience(data, df, scores_df, value):
     projects_values = data['projects']
     projects_df = pd.DataFrame(projects_values)
     
@@ -653,13 +653,13 @@ def describe_project_experience(data, scores_df, value):
     
     return projects_df.to_markdown()
 
-def describe_education(data, scores_df, value):
+def describe_education(data, df, scores_df, value):
     educations_values = data['educations']['education']
     education_df = pd.DataFrame(educations_values)
     
     return education_df.to_markdown()
 
-def describe_certifications(data, scores_df, value):
+def describe_certifications(data, df, scores_df, value):
     certifications_values = data['educations']['certifications']
     certification_df = pd.DataFrame(certifications_values)
     
@@ -680,7 +680,7 @@ def dict_to_markdown(data):
 #       }
 
 
-def get_criteria_descriptions(data, scores_df, criterias):
+def get_criteria_descriptions(data, df, scores_df, criterias):
     descriptions = []
     
     for value in criterias:
@@ -692,7 +692,7 @@ def get_criteria_descriptions(data, scores_df, criterias):
         if describe_func is None:
             continue
         
-        description = describe_func(data, scores_df, value)
+        description = describe_func(data, df, scores_df, value)
         descriptions.append({
             "name": value['name'],
             "description": description
@@ -714,8 +714,10 @@ def build_level_step(level_ranges, color_scale=None):
         steps.append({'range': [item["min"], 100], 'color': color})
     return steps
 
-def describe_work_experience(data, scores_df, value):
-    return ""
+def describe_work_experience(data, df, scores_df, value):
+    total_experience = get_total_experience(df)
+    nice_total_experience = round(total_experience, 2)
+    return f"Total experience: {nice_total_experience} years"
 
 # plot_skill_level
 # plot chart with score and level ranges
@@ -926,7 +928,7 @@ def evaluate_resume(data_dict, print=False):
     st.plotly_chart(fig, use_container_width=True)
     
     
-    descriptions = get_criteria_descriptions(processed_data, scores_df, criterias)
+    descriptions = get_criteria_descriptions(processed_data, enchanced_data, scores_df, criterias)
 
     return level, descriptions
     
