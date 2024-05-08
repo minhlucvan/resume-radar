@@ -299,7 +299,7 @@ def calculate_scores(df, criterias):
             'critical': [criteria_name],
             'score': [score],
             'weight': [weight],
-            'weighted_score': [weighted_score]
+            'weighted_score': [weighted_score],
         })
         
         score_df = pd.concat([score_df, criteria_df])
@@ -588,7 +588,7 @@ def preprocess_projects(data):
         experience_score = project['contribution'] * (project['complexity'] * dureation_years)
         project['experience_score'] = experience_score
         total_projects_duration += dureation_years
-    
+        
     data['total_projects'] = total_projects
     data['total_projects_duration'] = total_projects_duration
         
@@ -697,7 +697,69 @@ def find_level(score, level_ranges):
             return level
         
         level = item["level"]
-    return "Beyond Senior+"
+    return "Principal"
+
+def describe_empoyment_history(data, scores_df, value):
+    empoyment_values = data['properties']['EmploymentHistory']
+    empoyment_df = pd.DataFrame(empoyment_values)
+    
+    return empoyment_df.to_markdown()
+
+def describe_project_experience(data, scores_df, value):
+    projects_values = data['projects']
+    projects_df = pd.DataFrame(projects_values)
+    
+    projects_df['usedSkills'] = projects_df['usedSkills'].apply(lambda x: ', '.join(x))
+    projects_df['techstack'] = projects_df['techstack'].apply(lambda x: ', '.join(x))
+    
+    return projects_df.to_markdown()
+
+def describe_education(data, scores_df, value):
+    educations_values = data['educations']['education']
+    education_df = pd.DataFrame(educations_values)
+    
+    return education_df.to_markdown()
+
+def describe_certifications(data, scores_df, value):
+    certifications_values = data['educations']['certifications']
+    certification_df = pd.DataFrame(certifications_values)
+    
+    return certification_df.to_markdown()
+
+def dict_to_markdown(data):
+    markdown = ""
+    for key, value in data.items():
+        markdown += f" - {key}: {value}\n"
+    return markdown
+
+# {
+#         "degree": null,
+#         "fieldOfStudy": "Information Technology",
+#         "institution": "Cao Thang Technical College",
+#         "graduationYear": "2012",
+#         "gpa": null
+#       }
+
+
+def get_criteria_descriptions(data, scores_df, criterias):
+    descriptions = []
+    
+    for value in criterias:
+        if 'describe_func' not in value:
+            continue
+        
+        describe_func = value['describe_func']
+        
+        if describe_func is None:
+            continue
+        
+        description = describe_func(data, scores_df, value)
+        descriptions.append({
+            "name": value['name'],
+            "description": description
+        })
+    
+    return descriptions
 
 def build_level_step(level_ranges, color_scale=None):
     steps = []
@@ -707,7 +769,8 @@ def build_level_step(level_ranges, color_scale=None):
         if item["level"] in color_scale:
             color = color_scale[item["level"]]
         else:
-            color = '#000000'  # Default color
+            # white color
+            color = "#FFFFFF"
         
         steps.append({'range': [item["min"], 100], 'color': color})
     return steps
@@ -717,19 +780,34 @@ def build_level_step(level_ranges, color_scale=None):
 # a progress bar chart with score and level ranges
 def plot_skill_level(score, level_ranges):
     # Define the color scale
+    #00876c
+    #439a72
+    #6aad78
+    #8fbf80
+    #b4d18b
+    #d9e398
+    #fff4a8
+    #fbd88a
+    #f7bc72
+    #f19f60
+    #eb8055
+    #e16050
+    #d43d51
     color_scale = {
-        "Fresh-": "#D3D3D3",
-        "Fresh": "#7FFF00",
-        "Fresh+": "#32CD32",
-        "Junior-": "#00FFFF",
-        "Junior": "#1E90FF",
-        "Junior+": "#0000FF",
-        "Mid-": "#FFA500",
-        "Mid": "#FF4500",
-        "Mid+": "#FF0000",
-        "Senior-": "#8B0000",
-        "Senior": "#800000",
-        "Senior+": "#A52A2A"
+        "Unknown": "#008728",
+        "Fresh-": "#00876c",
+        "Fresh": "#439a72",
+        "Fresh+": "#6aad78",
+        "Junior-": "#8fbf80",
+        "Junior": "#b4d18b",
+        "Junior+": "#d9e398",
+        "Mid-": "#fff4a8",
+        "Mid": "#fbd88a",
+        "Mid+": "#f7bc72",
+        "Senior-": "#f19f60",
+        "Senior": "#eb8055",
+        "Senior+": "#e16050",
+        "Principal": "#d43d51",
     }
     
     fig = go.Figure(go.Indicator(
@@ -778,6 +856,7 @@ def evaluate_resume(data, print=False):
             "feature": "total_empoyment_experience",
             'aggregate_func': aggreate_empoyment_duration,
             "preprocess_func": preprocess_empoyment_history,
+            'describe_func': describe_empoyment_history,
             'weight': 1,
         },
         {
@@ -789,6 +868,7 @@ def evaluate_resume(data, print=False):
             'append_feature': '*',
             'append_func': append_first_work_experience,
             "aggregate_func": aggreate__total_work_experience,
+            "describe_func": describe_empoyment_history,
             "min_value": 2,
             "max_value": 5
         },
@@ -799,6 +879,7 @@ def evaluate_resume(data, print=False):
             "weight": 1,
             "aggregate_func": aggreate_project_experience,
             'preprocess_func': preprocess_projects,
+            'describe_func': describe_project_experience,
             "min_value": 2,
         },
         {
@@ -806,6 +887,7 @@ def evaluate_resume(data, print=False):
             # educations_education_1_institution
             "feature": "educations_education_\d+_institution",
             'aggregate_func': education_aggreate,
+            "describe_func": describe_education,
             "weight": 1,
         },
         {
@@ -813,6 +895,7 @@ def evaluate_resume(data, print=False):
             # educations_certifications_1_name
             "feature": "educations_certifications_\d+_name",
             'aggregate_func': certification_aggreate,
+            "describe_func": describe_certifications,
             "weight": 1,
         },
     ]
@@ -848,6 +931,8 @@ def evaluate_resume(data, print=False):
     
         
     level_ranges = [
+        {"level": "Unknown", "min": 0},
+        
         {"level": "Fresh-", "min": 10},
         {"level": "Fresh", "min": 15},
         {"level": "Fresh+", "min": 20},
@@ -863,6 +948,8 @@ def evaluate_resume(data, print=False):
         {"level": "Senior-", "min": 68},
         {"level": "Senior", "min": 78},
         {"level": "Senior+", "min": 88},
+        
+        {"level": "Principal", "min": 98}
     ]
     
     
@@ -881,13 +968,9 @@ def evaluate_resume(data, print=False):
     
     # Calculate scores
     scores_df = calculate_scores(enchanced_data, criterias)
-    st.write("Scores")
-    st.dataframe(scores_df, use_container_width=True)
-    
+  
     # total score
     total_score = calculate_total_score(scores_df)
-    st.write(f"#### Total score: {total_score}")
-
     
     # final level
     level = get_level(total_score, level_ranges)
@@ -895,8 +978,21 @@ def evaluate_resume(data, print=False):
     fig = plot_skill_level(total_score, level_ranges)
     
     st.plotly_chart(fig)
-
     
+    st.write(f"#### Total score: {total_score}")
+    st.write("Scores")
+    st.dataframe(scores_df, use_container_width=True)
+    
+    st.write(f"#### Reference data")
+    is_show_description = st.checkbox("Show reference", value=False)
+    descriptions = get_criteria_descriptions(processed_data, scores_df, criterias)
+    
+    if is_show_description:
+        for description in descriptions:
+            st.write(f"###### {description['name']}")
+            st.markdown(description['description'], unsafe_allow_html=True)
+            st.html("<hr>")
+
     return level
     
 
