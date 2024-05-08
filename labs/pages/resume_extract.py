@@ -8,7 +8,7 @@ from common import resume_extract
 load_dotenv()
 
 def main():
-    st.header("Chat with PDF")
+    st.header("Resume Extractor")
     
     pdf_url = st.text_input("Enter the URL of the PDF file")
 

@@ -4,7 +4,7 @@ from common import resume_evaluate
 
 # Streamlit app
 def main():
-    st.title("Resume Features Analysis")
+    st.title("Resume Evaluation")
 
     # File upload
     uploaded_file = st.file_uploader("Upload YAML file")
