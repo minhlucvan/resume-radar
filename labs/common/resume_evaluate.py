@@ -967,6 +967,10 @@ def evaluate_resume(data_dict, print=False):
     # total score
     total_score = calculate_total_score(scores_df)
     
+    st.write(f"#### Total score: {total_score}")
+    st.write("Scores")
+    st.dataframe(scores_df, use_container_width=True)
+    
     # final level
     level = get_level(total_score, level_ranges)
 
@@ -974,9 +978,6 @@ def evaluate_resume(data_dict, print=False):
     
     st.plotly_chart(fig, use_container_width=True)
     
-    st.write(f"#### Total score: {total_score}")
-    st.write("Scores")
-    st.dataframe(scores_df, use_container_width=True)
     
     descriptions = get_criteria_descriptions(processed_data, scores_df, criterias)
 
