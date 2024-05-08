@@ -9,3 +9,4 @@ openai
 langchain-google-genai==1.0.3
 google-generativeai==0.5.2
 pytimeparse==1.1.8
+dateparser==1.2.0
