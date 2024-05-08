@@ -365,34 +365,24 @@ def append_features(df, criterias):
 # aggreate_front_end_experience
 def aggreate_front_end_experience(values):
     return values.sum()
-
-def calculate_work_experience_ratio(df):
-    total_experience = get_total_experience(df)
-    total_project_duration = df.loc['total_projects_duration']['value']
-    work_experience_ratio = total_experience / total_project_duration if total_project_duration > 0 else float('inf')
-    
-    # Inf = 1
-    if work_experience_ratio == float('inf'):
-        work_experience_ratio = 1
-    
-    if work_experience_ratio > 3:
-        work_experience_ratio = 3
-        
-    work_experience_ratio = work_experience_ratio if work_experience_ratio is not None else 1
-    
-    return work_experience_ratio
     
 # aggreate_project_experience
 def aggreate_project_experience(values, df, score_df, weight):
     
     # get work_experience_ratio
-    work_experience_ratio = calculate_work_experience_ratio(df)
+    total_projects_factor = df.loc['total_projects_factor']['value']
+    total_experience = get_total_experience(df)
     
-    value = values.sum()
+    total_projects = df.loc['total_projects']['value']
     
-    scaled_value = value * work_experience_ratio
+    mean_project_duration = total_experience / total_projects if total_projects > 0 else 0.3
+
+    value = total_projects_factor * mean_project_duration
+        
+    if value == 0:
+        return 0, 0
     
-    return scaled_value, weight
+    return value, weight
 
 # none aggregate function
 def none_aggreate(values, _):
@@ -573,6 +563,7 @@ def preprocess_projects(data):
     # process data.projects.experience_score = data.projects.contribution * (data.projects.complexity * data.projects.duration/12 )
     total_projects = len(data['projects'])
     total_projects_duration = 0
+    total_projects_factor = 0
     for project in data['projects']:
         try:
             dureation = convert_wildcards_to_month(project['duration'])
@@ -588,12 +579,15 @@ def preprocess_projects(data):
             dureation_years = 3 / 12
             
         project['duration_years'] = dureation_years
-        experience_score = project['contribution'] * (project['complexity'] * dureation_years)
+        project_factor = project['contribution'] * project['complexity']
+        experience_score = project_factor * dureation_years
         project['experience_score'] = experience_score
         total_projects_duration += dureation_years
+        total_projects_factor += project_factor
         
     data['total_projects'] = total_projects
     data['total_projects_duration'] = total_projects_duration
+    data['total_projects_factor'] = total_projects_factor
         
     return data
 
