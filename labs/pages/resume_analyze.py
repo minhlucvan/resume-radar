@@ -51,7 +51,10 @@ def main():
         cached_data = resume_extract.get_cached_data(pdf) if pdf_url != "" and resume_extract.has_cached_data(pdf) else None
         data = resume_extract.extract_resume(pdf) if cached_data is None or not is_use_previous else cached_data
         
+        data = resume_extract.load_data(data)
+        
         dumb_data(data, pdf_url)
+        
         
     st.markdown(data['data'], unsafe_allow_html=True)
     
