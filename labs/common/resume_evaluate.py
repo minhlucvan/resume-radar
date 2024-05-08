@@ -982,7 +982,7 @@ def evaluate_resume(data, print=False):
 
     fig = plot_skill_level(total_score, level_ranges)
     
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     
     st.write(f"#### Total score: {total_score}")
     st.write("Scores")

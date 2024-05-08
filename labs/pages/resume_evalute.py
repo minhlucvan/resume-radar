@@ -12,6 +12,8 @@ def main():
         # Load JSON file
         data = uploaded_file.read()
         
+        st.markdown(data['data'], unsafe_allow_html=True)
+        
         evaluation, descriptions = resume_evaluate.evaluate_resume(data)
         
         st.write("### Final level: ", evaluation)
