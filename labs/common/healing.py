@@ -69,26 +69,26 @@ def fix_broken_json(text):
     # extract content ```json content ```
     json_content = response.replace('```json\n', '').replace('```', '')
     
-    # remove any // comments to the end of the line
-    json_content = re.sub(r'//.*', '', json_content)
+    # # remove any // comments to the end of the line
+    # json_content = re.sub(r'//.*', '', json_content)
     
-    # remove all content before the first { and after the last }
-    first_brace_index = json_content.find("{")
-    last_brace_index = json_content.rfind("}")
-    first_square_brace_index = json_content.find("[")
-    last_square_brace_index = json_content.rfind("]")
+    # # remove all content before the first { and after the last }
+    # first_brace_index = json_content.find("{")
+    # last_brace_index = json_content.rfind("}")
+    # first_square_brace_index = json_content.find("[")
+    # last_square_brace_index = json_content.rfind("]")
     
-    if first_square_brace_index < first_brace_index:
-        first_brace_index = first_square_brace_index 
+    # if first_square_brace_index < first_brace_index:
+    #     first_brace_index = first_square_brace_index 
     
-    if last_square_brace_index > last_brace_index:
-        last_brace_index = last_square_brace_index
+    # if last_square_brace_index > last_brace_index:
+    #     last_brace_index = last_square_brace_index
     
-    if first_brace_index > 0:
-        json_content = json_content[first_brace_index:]
+    # if first_brace_index > 0:
+    #     json_content = json_content[first_brace_index:]
     
-    if last_brace_index < len(json_content) - 1:
-        json_content = json_content[:last_brace_index + 1]
+    # if last_brace_index < len(json_content) - 1:
+    #     json_content = json_content[:last_brace_index + 1]
     
     return json_content
 
