@@ -637,6 +637,7 @@ def extract_resume(url_or_file, silent=True):
 
     extracted_data_json = json.dumps(extracted_data, indent=4)
     
-    st.text_area("Extracted data", extracted_data_json)
+    if not silent:
+        st.text_area("Extracted data", extracted_data_json)
     
     return extracted_data_json

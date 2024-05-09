@@ -73,6 +73,16 @@ def main():
                 st.markdown(description['description'], unsafe_allow_html=True)
                 st.text("")
     
+    binary_data = json.dumps(data, indent=4, sort_keys=True, default=str).encode()
+    
+    st.write("#### Download data")
+    # download the data
+    st.download_button(
+        label="Download data",
+        data=binary_data,
+        file_name=f"{hash_pdf_url(pdf_url)}.json",
+        mime="application/json"
+    )
     
 if __name__ == '__main__':
     main()
