@@ -6,9 +6,17 @@ import os
 import re
 from common import env
 import streamlit as st
+from common import json_utils
 
 # fix broken json
 def fix_broken_json(text):
+    
+    json_content = json_utils.clean_json_text(text)
+    
+    try:
+        return json.loads(json_content)
+    except:
+        pass
     
     genai.configure(api_key=env.get_gemini_key())
 
@@ -65,42 +73,19 @@ def fix_broken_json(text):
 
     convo.send_message(text)
     response = convo.last.text
-
-    # extract content ```json content ```
-    json_content = response.replace('```json\n', '').replace('```', '')
     
-    # # remove any // comments to the end of the line
-    # json_content = re.sub(r'//.*', '', json_content)
+    json_content = json_utils.clean_json_text(response)
     
-    # # remove all content before the first { and after the last }
-    # first_brace_index = json_content.find("{")
-    # last_brace_index = json_content.rfind("}")
-    # first_square_brace_index = json_content.find("[")
-    # last_square_brace_index = json_content.rfind("]")
-    
-    # if first_square_brace_index < first_brace_index:
-    #     first_brace_index = first_square_brace_index 
-    
-    # if last_square_brace_index > last_brace_index:
-    #     last_brace_index = last_square_brace_index
-    
-    # if first_brace_index > 0:
-    #     json_content = json_content[first_brace_index:]
-    
-    # if last_brace_index < len(json_content) - 1:
-    #     json_content = json_content[:last_brace_index + 1]
-    
-    return json_content
+    return json.loads(json_content)
 
 def load_json_attempt(text):
     try:
         return json.loads(text)
     except:
         st.warning("Failed to load JSON, attempting to fix it")
-        nice_json = fix_broken_json(text)
         try:
-            return json.loads(nice_json)
+            return fix_broken_json(text)
         except:
             st.error("Failed to fix JSON")
-            st.text_area("Broken JSON", nice_json)
+            st.text_area("Broken JSON", text)
             raise Exception("Failed to fix JSON")

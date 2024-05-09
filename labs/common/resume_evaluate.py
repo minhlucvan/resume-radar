@@ -152,6 +152,12 @@ def convert_wildcards_to_date(value):
         except ValueError:
             print("Cannot parse date")
     
+    # 22/04/2024
+    try :
+        parsed_date = datetime.datetime.strptime(value, '%d/%m/%Y')
+        return parsed_date.date()
+    except ValueError:
+        print("Cannot parse date")
     
     # 2022-04
     try:

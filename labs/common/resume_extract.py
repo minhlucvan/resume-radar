@@ -295,14 +295,8 @@ The "level" field should use integer values to represent the professional level 
     convo.send_message(text)
 
     response = convo.last.text
-
-    # get content ```json content ```
-    json_content = response.replace('```json\n', '').replace('```', '')
     
-    # remove any // comments to the end of the line
-    json_content = re.sub(r'//.*', '', json_content)
-    
-    return healing.load_json_attempt(json_content)
+    return healing.load_json_attempt(response)
 
 
 def extract_pdf_text(pdf):
@@ -393,14 +387,8 @@ JSON Response Structure:
 
     convo.send_message(text)
     response = convo.last.text
-
-    # extract content ```json content ```
-    json_content = response.replace('```json\n', '').replace('```', '')
     
-    # remove any // comments to the end of the line
-    json_content = re.sub(r'//.*', '', json_content)
-    
-    return healing.load_json_attempt(json_content)    
+    return healing.load_json_attempt(response)    
 
 # extract project data
 def extract_project_data(text):
@@ -497,13 +485,7 @@ Respond in JSON format with the following structure for each project:
     convo.send_message(text)
     response = convo.last.text
 
-    # extract content ```json content ```
-    json_content = response.replace('```json\n', '').replace('```', '')
-    
-    # remove any // comments to the end of the line
-    json_content = re.sub(r'//.*', '', json_content)
-
-    return healing.load_json_attempt(json_content)
+    return healing.load_json_attempt(response)
 
 # load pdf from url
 # return the pdf content as File the same as the uploaded file
