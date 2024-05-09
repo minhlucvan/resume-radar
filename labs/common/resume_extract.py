@@ -13,6 +13,9 @@ import getpass
 import os
 import re
 
+from common import env
+from common import healing
+
 import hashlib
 
 def hash_pdf_url(url):   
@@ -52,7 +55,7 @@ def extract_structured_data(data):
     $ pip install google-generativeai
     """
 
-    genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+    genai.configure(api_key=env.get_gemini_key())
 
     # Set up the model
     generation_config = {
@@ -146,7 +149,7 @@ def extract_data(text):
     $ pip install google-generativeai
     """
 
-    genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+    genai.configure(api_key=env.get_gemini_key())
 
     # Set up the model
     generation_config = {
@@ -188,6 +191,7 @@ def extract_data(text):
 
     response = model.generate_content(
         prompt_parts, request_options={"timeout": 600})
+    
     return response.text
 
 # extract pdf text
@@ -204,7 +208,7 @@ def extract_json(text):
     $ pip install google-generativeai
     """
 
-    genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+    genai.configure(api_key=env.get_gemini_key())
 
     # Set up the model
     generation_config = {
@@ -298,7 +302,7 @@ The "level" field should use integer values to represent the professional level 
     # remove any // comments to the end of the line
     json_content = re.sub(r'//.*', '', json_content)
     
-    return json_content
+    return healing.load_json_attempt(json_content)
 
 
 def extract_pdf_text(pdf):
@@ -311,7 +315,7 @@ def extract_pdf_text(pdf):
     return text
 
 def extract_education_data(text):
-    genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+    genai.configure(api_key=env.get_gemini_key())
 
     # Set up the model
     generation_config = {
@@ -395,13 +399,13 @@ JSON Response Structure:
     
     # remove any // comments to the end of the line
     json_content = re.sub(r'//.*', '', json_content)
-
-    return json_content    
+    
+    return healing.load_json_attempt(json_content)    
 
 # extract project data
 def extract_project_data(text):
 
-    genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+    genai.configure(api_key=env.get_gemini_key())
 
     # Set up the model
     generation_config = {
@@ -434,6 +438,9 @@ def extract_project_data(text):
 
 For each project:
 - Provide the project name.
+- Provide the project description.
+- provide the role of the candidate in the project.
+- Provide the responsibilities of the candidate in the project.
 - Rate the complexity from 1 to 5 based on the project description and tech stack, where:
     - 1 represents a project with a basic stack or monolithic architecture, typically involving straightforward technologies and minimal integration challenges.
     - 2 represents a project with some complexity, potentially involving moderate integration challenges or the use of emerging technologies.
@@ -464,6 +471,9 @@ Ensure that:
 Respond in JSON format with the following structure for each project:
 [{ 
     "name": "Project Name",
+    "description": "Project Description",
+    "role": "Role",
+    "responsibilities": "Responsibilities",
     "complexity": 1-5,
     "usedSkills": ["Skill 1", "Skill 2", ...],
     "techstack": ["Tech Stack 1", "Tech Stack 2", ...],
@@ -493,7 +503,7 @@ Respond in JSON format with the following structure for each project:
     # remove any // comments to the end of the line
     json_content = re.sub(r'//.*', '', json_content)
 
-    return json_content
+    return healing.load_json_attempt(json_content)
 
 # load pdf from url
 # return the pdf content as File the same as the uploaded file
@@ -593,39 +603,34 @@ def extract_resume(url_or_file, silent=True):
     with st.spinner("Extracting yml from structured data..."):
         try:
             json_data = extract_json(data)
-            # combine all the extracted data into a dictionary
-            parsed_yml = json.loads(json_data)
+            
             if not silent:
                 st.write('Extracted Json:')
                 st.text_area("Extracted Json", json_data)
         except Exception as e:
             st.write('Error extracting json data:', e)
-            st.text_area("Extracted Json", json_data)
+            st.stop()
 
     # extract project data
     with st.spinner("Extracting project data..."):
         try:
-            project_data = extract_project_data(text)
-            parsed_project_data = json.loads(project_data)
+            parsed_project_data = extract_project_data(text)
             if not silent:
                 st.write('Extracted project data:')
                 st.write(parsed_project_data)
         except Exception as e:
             st.write('Error extracting project data:', e)
-            st.text_area("Extracted project data", project_data)
+            st.stop()
         
     with st.spinner("Extracting education data..."):
-        education_data = extract_education_data(text)
+        parsed_education_data = extract_education_data(text)
         if not silent:
             st.write('Extracted education data:')
-            st.text_area("Extracted education data", education_data)
-        
-        parsed_education_data = json.loads(education_data)
 
     extracted_data = {
         "text": text,
         "data": data,
-        "properties": parsed_yml,
+        "properties": json_data,
         "projects": parsed_project_data,
         "educations": parsed_education_data
     }

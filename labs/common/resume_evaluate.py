@@ -133,6 +133,10 @@ def convert_wildcards_to_date(value):
     # remove ~
     value = value.replace("~", "")
     
+    # if empty set value to present
+    if value == "":
+        return datetime.datetime.now().date()
+    
     if value.lower() == "present" or value.lower() == "now":
         return datetime.datetime.now().date()
     
