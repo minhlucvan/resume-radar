@@ -75,6 +75,14 @@ def fix_broken_json(text):
     # remove all content before the first { and after the last }
     first_brace_index = json_content.find("{")
     last_brace_index = json_content.rfind("}")
+    first_square_brace_index = json_content.find("[")
+    last_square_brace_index = json_content.rfind("]")
+    
+    if first_square_brace_index < first_brace_index:
+        first_brace_index = first_square_brace_index 
+    
+    if last_square_brace_index > last_brace_index:
+        last_brace_index = last_square_brace_index
     
     if first_brace_index > 0:
         json_content = json_content[first_brace_index:]
