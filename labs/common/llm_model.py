@@ -20,7 +20,7 @@ import hashlib
 
 # excute prompt 
 # extract project data
-def run(system_instruction, text, is_json=False):
+def run(system_instruction, text, is_json=False, is_csv=False):
 
     genai.configure(api_key=env.get_gemini_key())
 
@@ -58,8 +58,11 @@ def run(system_instruction, text, is_json=False):
 
     convo = model.start_chat(history=[])
 
-    convo.send_message(text, request_options={"timeout": 600})
+    convo.send_message(text)
     response = convo.last.text
+    
+    if is_csv:
+        return healing.load_csv_attempt(response)
     
     if is_json:
         return healing.load_json_attempt(response)

@@ -7,7 +7,7 @@ import json
 import re
 import streamlit as st
 import plotly.graph_objects as go
-from common.utils import convert_wildcards_to_date
+from common.utils import convert_wildcards_to_date, convert_wildcards_to_month
 
 # calculate_total_score
 def calculate_total_score(df):
@@ -317,8 +317,8 @@ def aggreate_project_experience(values, df, score_df, weight):
     return value, weight
 
 # none aggregate function
-def none_aggreate(values, _):
-    return 0
+def none_aggreate(values, _, __, ___):
+    return 0, 0
 
 basic_criterias = [
     {

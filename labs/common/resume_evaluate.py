@@ -216,9 +216,8 @@ def preprocess_data(data, criterias=[]):
 
 
 # Streamlit app
-def evaluate_resume(data_dict, print=False):
+def evaluate_resume(data_dict, criterias = basic_criterias, print=False):
     # define sample criteria
-    criterias = basic_criterias
     
     if print:
         st.write(data_dict['data'])

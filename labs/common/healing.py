@@ -6,6 +6,8 @@ import os
 import re
 from common import env
 import streamlit as st
+import pandas as pd
+import io
 from common import json_utils
 
 # fix broken json
@@ -89,3 +91,23 @@ def load_json_attempt(text):
             st.error("Failed to fix JSON")
             st.text_area("Broken JSON", text)
             raise Exception("Failed to fix JSON")
+
+def load_csv_attempt(text):
+    try:
+        csv_content = text
+        
+        # when has ```csv ``` pattern, get the content after ```csv to the ```
+        if "```csv" in text:
+            csv_content = text.split("```csv")[1]
+            csv_content = csv_content.split("```")[0]
+            
+        # when has ``` csv pattern, get the content after ``` csv to the ```
+        if "```" in csv_content:
+            csv_content = csv_content.split("```")[1]
+            csv_content = csv_content.split("```")[0]
+        
+        return pd.read_csv(io.StringIO(csv_content))
+    except:
+        st.error("Failed to load CSV")
+        st.text_area("CSV", text)
+        raise Exception("Failed to load CSV")

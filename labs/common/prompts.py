@@ -138,3 +138,43 @@ Respond in JSON format with the following structure for each project:
 """
     
     return system_instruction, resume
+
+
+def evaluate_resume(data, criterias):
+    system_instruction_tpl = """**Role:** Act as a Hiring Manager
+
+**Task:** Evaluate the candidate's resume based on the following checklist.
+
+**Checklist:**
+
+{criterias}
+
+**Expected Output:**
+
+- Format: CSV
+- Columns: ID, Evaluation
+- Evaluation: 
+  - 1 if the criteria are met
+  - 0 if the criteria are not met
+
+**Steps:**
+
+1. Carefully review the provided resume.
+2. For each criterion in the checklist, determine if the candidate meets the requirements.
+3. Assign a value of 1 if the candidate meets the criteria and 0 if they do not.
+4. Output the results in a CSV format with the following columns: ID, Evaluation.
+
+**Example Output:**
+
+```
+ID, Evaluation
+0, 1
+1, 0
+2, 1
+```
+
+---
+
+Ensure the evaluation process is thorough and based solely on the information provided in the resume. If any information is unclear or missing, mark the corresponding criteria as not met (0)."""
+    system_instruction = system_instruction_tpl.format(criterias=criterias)
+    return system_instruction, data
