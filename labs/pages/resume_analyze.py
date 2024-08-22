@@ -53,7 +53,8 @@ def main():
         
         data = resume_extract.load_data(data)
         
-        dumb_data(data, pdf_url)
+        # TODO: save the data to a file
+        # dumb_data(data, pdf_url)
         
         
     st.markdown(data['data'], unsafe_allow_html=True)
